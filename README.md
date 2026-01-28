@@ -182,7 +182,7 @@ flowchart LR
 
 ```
 contracts/
-├── core/
+├── core/							# 游戏核心逻辑入口
 │   └── HybridRandomDiceGame.sol	# 唯一部署的核心合约（状态机 + 资金闭环 + VRF 回调）
 │
 ├── base/							# 抽象模块（被 core 继承）
@@ -195,13 +195,13 @@ contracts/
 │   ├── Errors.sol					# 自定义错误（revert 更省 gas、语义更清晰）
 │   └── Events.sol					# 事件全集（历史靠事件追踪）
 │
-├── libraries/						# 纯工具库（pure/view）
+├── libraries/						# 哈希计算与工具库（pure/view）
 │   └── HashLib.sol					# computeCommitHash + mixRandomness
 │
 ├── interfaces/
 │   └── IHybridRandomDiceGame.sol	# 对外接口（前端/集成用）
 │
-├── lens/							# 只读查询（可选部署）
+├── lens/							# 前端数据聚合层（可选部署）
 │   └── GameLens.sol				# 聚合玩家仪表盘/全局信息
 ```
 
@@ -246,7 +246,7 @@ stateDiagram-v2
   None --> Committed: commit(commitHash)<br/>支付 BET
   Committed --> RandomRequested: revealAndRequestRandom(guess, secret)<br/>验证承诺 + 发起 VRF
 
-  RandomRequested --> None: fulfillRandomWords(requestId)<br/>回调到达 -> settle<br/>（记录结果+Pull Payment记账）
+  RandomRequested --> None: fulfillRandomWords(requestId)<br/>回调到达 -> settle<br/>记录结果+Pull Payment记账
 
   %% ----------------------------
   %% 异常/容灾分支
